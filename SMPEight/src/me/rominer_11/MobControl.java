@@ -8,20 +8,16 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -32,7 +28,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 public class MobControl implements Listener 
@@ -94,7 +89,6 @@ public class MobControl implements Listener
 			creeperTasks.put(creeper.getUniqueId(), task);
 		}
 	}
-	@SuppressWarnings("removal")
 	@EventHandler
 	/**
 	 * Thank you to this guy: https://www.spigotmc.org/threads/tutorial-calculating-damage-taken-by-a-player-manually.424680/
@@ -134,11 +128,11 @@ public class MobControl implements Listener
 				    				    
 				    // Applies damage
 				    event.setDamage(0);
-				    if (Math.max(0.75 * (player.getHealth() - damage), 0.0) == 0.0)
+				    if (Math.max(0.50 * (player.getHealth() - withEnchantmentReduction), 0.0) == 0.0)
 				    {
 				    	explosionBlockDeath.add(player.getUniqueId());
 				    }
-				    player.setHealth(Math.max(0.75 * (player.getHealth() - damage), 0.0));
+				    player.setHealth(Math.max(0.50 * (player.getHealth() - withEnchantmentReduction), 0.0));
 				}
 			}
 		}
@@ -148,7 +142,6 @@ public class MobControl implements Listener
 	{
 		if (event.getEntity() instanceof Player)
 		{
-			Player player = (Player) event.getEntity();
 			if (event.getDamager() instanceof Monster)
 			{
 				event.setDamage(event.getDamage() * 2.5);
