@@ -36,6 +36,7 @@ public class ClimateControl implements Listener
 
 	private Map<Material, Double> armorWarmth;
 	private final Map<UUID, BukkitTask> playersInNether = new HashMap<>();
+	private final Map<UUID, BukkitTask> playersInBadClimate = new HashMap<>();
 	
 	public ClimateControl(Main plugin)
 	{
@@ -128,9 +129,30 @@ public class ClimateControl implements Listener
 		double discomfort = getDiscomfort(player);
 		if (discomfort >= 2.0)
 		{
-			player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 100, 1));
-			player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 100, 1));
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Your clothes are not suitable for this climate!"));
+			if (!playersInBadClimate.containsKey(player.getUniqueId()))
+			{
+				BukkitTask task = new BukkitRunnable() {
+					@Override
+					public void run()
+					{
+						if (player.getFireTicks() <= 0 && player.getLocation().getBlock().getType() != Material.WATER_CAULDRON)
+						{
+							player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 100, 1));
+							player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 100, 1));
+							player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Your clothes are not suitable for this climate!"));
+						}
+					}
+				}.runTaskTimer(plugin, 0L, 20L);
+				playersInBadClimate.put(player.getUniqueId(), task);
+			}
+		}
+		else if (playersInBadClimate.containsKey(player.getUniqueId()))
+		{
+			BukkitTask task = playersInBadClimate.remove(player.getUniqueId());
+			if (task != null)
+			{
+				task.cancel();
+			}
 		}
 		
 		if (player.getLocation().getWorld().getEnvironment() == World.Environment.NETHER)
