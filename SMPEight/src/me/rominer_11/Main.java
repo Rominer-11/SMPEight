@@ -7,6 +7,11 @@ public class Main extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		getServer().getPluginManager().registerEvents(new SpeedControl(this), this);
+		getServer().getPluginManager().registerEvents(new ClimateControl(), this);
+		getServer().getPluginManager().registerEvents(new DamageControl(), this);
+		getServer().getPluginManager().registerEvents(new MobControl(), this);
+		getServer().getPluginManager().registerEvents(new GravityControl(this), this);
 		getServer().getPluginManager().registerEvents(new SpeedControl(), this);
 		getServer().getPluginManager().registerEvents(new ClimateControl(this), this);
 		getServer().getPluginManager().registerEvents(new DamageControl(), this);

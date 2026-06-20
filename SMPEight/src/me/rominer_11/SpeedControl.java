@@ -2,21 +2,31 @@ package me.rominer_11;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-
-public class SpeedControl implements Listener 
+public class SpeedControl implements Listener
 {
-	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event)
+	public SpeedControl(JavaPlugin plugin)
 	{
-		Player player = event.getPlayer();
-		
+		// Run every 10 ticks (0.5 seconds) instead of on every PlayerMoveEvent
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				for (Player player : plugin.getServer().getOnlinePlayers())
+				{
+					updateSpeed(player);
+				}
+			}
+		}.runTaskTimer(plugin, 0L, 10L);
+	}
+
+	private void updateSpeed(Player player)
+	{
 		// Health and hunger contribute to player max speed
 		float newspeed = (float) (0.0025 * (((0.5) * player.getFoodLevel()) + ((1.5) * player.getHealth())) + 0.1);
 		
@@ -25,14 +35,17 @@ public class SpeedControl implements Listener
 		ItemStack chestplate = player.getInventory().getChestplate();
 		ItemStack leggings = player.getInventory().getLeggings();
 		ItemStack boots = player.getInventory().getBoots();
-		
+
 		float armordebuff = (float) 0.0;
-		
+
 		if (helmet != null && helmet.getType() != Material.LEATHER_HELMET && helmet.getType() != Material.CHAINMAIL_HELMET)
 		{
 			armordebuff += .15;
 		}
-		if (chestplate != null && chestplate.getType() != Material.LEATHER_CHESTPLATE && chestplate.getType() != Material.CHAINMAIL_CHESTPLATE)
+		// Exclude Elytra
+		if (chestplate != null && chestplate.getType() != Material.LEATHER_CHESTPLATE
+				&& chestplate.getType() != Material.CHAINMAIL_CHESTPLATE
+				&& chestplate.getType() != Material.ELYTRA)
 		{
 			armordebuff += .40;
 		}
@@ -44,10 +57,12 @@ public class SpeedControl implements Listener
 		{
 			armordebuff += .15;
 		}
-		
+
 		newspeed = newspeed - ((armordebuff * (float) 0.1));
 
-		
+		// Clamp speed 
+		newspeed = Math.max(0.0f, Math.min(1.0f, newspeed));
+
 		// Set new speed
 		player.setWalkSpeed(newspeed);
 	}
