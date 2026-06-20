@@ -1,8 +1,15 @@
 package me.rominer_11;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.bukkit.block.BlockType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,12 +18,40 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
+/**
+ * This class implements climate-based features including...
+ * Increased hunger based on temperature
+ * Heat stroke and hypothermia
+ * Nether fire
+ */
 public class ClimateControl implements Listener 
 {
+	private static Main plugin;
+
+	private Map<Material, Double> armorWarmth;
+	private final Map<UUID, BukkitTask> playersInNether = new HashMap<>();
+	
+	public ClimateControl(Main plugin)
+	{
+		ClimateControl.plugin = plugin;
+		
+		this.armorWarmth = new HashMap<>();
+		this.armorWarmth.put(Material.LEATHER_HELMET, 0.30);
+		this.armorWarmth.put(Material.LEATHER_CHESTPLATE, 0.80);
+		this.armorWarmth.put(Material.LEATHER_LEGGINGS, 0.60);
+		this.armorWarmth.put(Material.LEATHER_BOOTS, 0.30);
+		this.armorWarmth.put(Material.CHAINMAIL_HELMET, 0.0);
+		this.armorWarmth.put(Material.CHAINMAIL_CHESTPLATE, 0.0);
+		this.armorWarmth.put(Material.CHAINMAIL_LEGGINGS, 0.0);
+		this.armorWarmth.put(Material.CHAINMAIL_BOOTS, 0.0);
+	}
+	
 	public double getDiscomfort(Player player)
 	{
 		double temperature = player.getLocation().getBlock().getTemperature();
@@ -30,23 +65,52 @@ public class ClimateControl implements Listener
 		
 		double armordebuff = 0.0;
 		
-		if (helmet != null && helmet.getType() != Material.CHAINMAIL_HELMET)
+		if (helmet != null)
 		{
-			armordebuff += .15;
+			if (this.armorWarmth.containsKey(helmet.getType()))
+			{
+				armordebuff += armorWarmth.get(helmet.getType());
+			}
+			else
+			{
+				armordebuff += .0375;
+			}
 		}
-		if (chestplate != null && chestplate.getType() != Material.CHAINMAIL_CHESTPLATE)
+		if (chestplate != null)
 		{
-			armordebuff += .40;
+			if (this.armorWarmth.containsKey(chestplate.getType()))
+			{
+				armordebuff += armorWarmth.get(chestplate.getType());
+			}
+			else
+			{
+				armordebuff += .075;
+			}
 		}
-		if (leggings != null && leggings.getType() != Material.CHAINMAIL_LEGGINGS)
+		if (leggings != null)
 		{
-			armordebuff += .30;
+			if (this.armorWarmth.containsKey(leggings.getType()))
+			{
+				armordebuff += armorWarmth.get(leggings.getType());
+			}
+			else
+			{
+				armordebuff += .10;
+			}
 		}
-		if (boots != null && boots.getType() != Material.CHAINMAIL_BOOTS)
+		if (boots != null)
 		{
-			armordebuff += .15;
+			if (this.armorWarmth.containsKey(boots.getType()))
+			{
+				armordebuff += armorWarmth.get(boots.getType());
+			}
+			else
+			{
+				armordebuff += .0375;
+			}
 		}
-		temperature += 0.4 * armordebuff;
+		
+		temperature += (0.5) * armordebuff;
 		
 		double discomfort = (((1.5) * Math.abs(1.0 - temperature)) + ((0.5) * humidity));
 		
@@ -64,15 +128,36 @@ public class ClimateControl implements Listener
 		double discomfort = getDiscomfort(player);
 		if (discomfort >= 2.0)
 		{
-			player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 200, 1));
+			player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 100, 1));
+			player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 100, 1));
+			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Your clothes are not suitable for this climate!"));
 		}
 		
 		if (player.getLocation().getWorld().getEnvironment() == World.Environment.NETHER)
 		{
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("This dimension is very hot!"));
-			if (player.getFireTicks() <= 0)
+			
+			if (!playersInNether.containsKey(player.getUniqueId()))
 			{
-				player.setFireTicks(32000);
+				BukkitTask task = new BukkitRunnable() {
+					@Override
+					public void run()
+					{
+						if (player.getFireTicks() <= 0 && player.getLocation().getBlock().getType() != Material.WATER_CAULDRON)
+						{
+							player.setFireTicks(32000);
+							player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("This dimension is very hot!"));
+						}
+					}
+				}.runTaskTimer(plugin, 0L, 20L);
+				playersInNether.put(player.getUniqueId(), task);
+			}
+		}
+		else if (playersInNether.containsKey(player.getUniqueId()))
+		{
+			BukkitTask task = playersInNether.remove(player.getUniqueId());
+			if (task != null)
+			{
+				task.cancel();
 			}
 		}
 	}

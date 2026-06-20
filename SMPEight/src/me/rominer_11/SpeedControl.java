@@ -28,8 +28,8 @@ public class SpeedControl implements Listener
 	private void updateSpeed(Player player)
 	{
 		// Health and hunger contribute to player max speed
-		float newspeed = (float) (0.0025 * (player.getFoodLevel() + player.getHealth()) + 0.1);
-
+		float newspeed = (float) (0.0025 * (((0.5) * player.getFoodLevel()) + ((1.5) * player.getHealth())) + 0.1);
+		
 		// Armor contributes as well!
 		ItemStack helmet = player.getInventory().getHelmet();
 		ItemStack chestplate = player.getInventory().getChestplate();
