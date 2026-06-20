@@ -1,6 +1,8 @@
 package me.rominer_11;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,7 +17,6 @@ import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 
 public class EnchantControl implements Listener 
 {
@@ -47,12 +48,17 @@ public class EnchantControl implements Listener
 		
 		// Remove conflicting enchants
 		Map<Enchantment, Integer> otherEnchants = event.getEnchantsToAdd();
+		List<Enchantment> toRemove = new ArrayList<>();
 		for (Map.Entry<Enchantment, Integer> enchantLevelPair : otherEnchants.entrySet())
 		{
 			if (enchantLevelPair.getKey().conflictsWith(offer.getEnchantment()) || enchantLevelPair.getKey().equals(offer.getEnchantment()))
 			{
-				otherEnchants.remove(enchantLevelPair.getKey());
+				toRemove.add(enchantLevelPair.getKey());
 			}
+		}
+		for (Enchantment enchant : toRemove)
+		{
+			otherEnchants.remove(enchant);
 		}
 	}
 	
