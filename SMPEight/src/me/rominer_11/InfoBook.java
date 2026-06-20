@@ -16,12 +16,12 @@ public class InfoBook implements Listener
 		BookMeta meta = (BookMeta) book.getItemMeta();
 
 		meta.setTitle("SMPEight Guide");
-		meta.setAuthor("rominer_11");
+		meta.setAuthor("ghoststaryt");
 
 		meta.setPages(
 			// Page 1: Welcome
 			"§l§nWelcome to SMPEight!§r\n\n" +
-			"This server changes vanilla Minecraft in many ways. " +
+			"This plugin changes vanilla Minecraft in many ways. " +
 			"This book explains the key features.\n\n" +
 			"Use §l/smpguide§r to reopen this book at any time.",
 
@@ -71,7 +71,12 @@ public class InfoBook implements Listener
 			"§l§nTips§r\n\n" +
 			"• Wear §lleather§r or §lchainmail§r to stay fast.\n\n" +
 			"• Match your armor to the §lclimate§r.\n\n" +
-			"• §l/smpguide§r to reopen this book"
+			"• §l/smpguide§r to reopen this book",
+			
+			// Page 11: Credits
+			"§l§nCredits§r\n\n" +
+			"Lead Developer: \n August - rominer_11\n" +
+			"Developer: \n Sky - ghoststaryt"
 		);
 		book.setItemMeta(meta);
 		return book;
