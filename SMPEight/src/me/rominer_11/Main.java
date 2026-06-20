@@ -21,6 +21,7 @@ public class Main extends JavaPlugin implements org.bukkit.command.CommandExecut
 		getServer().getPluginManager().registerEvents(new BedControl(), this);
 		getServer().getPluginManager().registerEvents(new InfoBook(), this);
 		getCommand("smpguide").setExecutor(this);
+		
 		System.out.println("SMPEight enabled!");
 		System.out.println("SMPEight is best experienced on HARD difficulty, with keepInventory FALSE, and with playersSleepingPercentage 50");
 	}
