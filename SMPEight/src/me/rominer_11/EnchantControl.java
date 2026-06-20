@@ -1,5 +1,6 @@
 package me.rominer_11;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,7 +34,7 @@ public class EnchantControl implements Listener
 		
 		if ((left != null && !left.getType().isAir()) && (right != null && !right.getType().isAir()))
 		{
-			if (!left.getEnchantments().isEmpty() || !right.getEnchantments().isEmpty())
+			if ((!left.getEnchantments().isEmpty() || left.getType() == Material.ENCHANTED_BOOK) && (!right.getEnchantments().isEmpty() || right.getType() == Material.ENCHANTED_BOOK))
 			{
 				event.setResult(null);
 			}
