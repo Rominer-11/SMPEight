@@ -3,3 +3,8 @@ main: me.rominer_11.Main
 author: rominer_11
 version: 1.0
 api-version: '26.1.2'
+
+commands:
+  smpguide:
+    description: Reopen the SMPEight guide book
+    usage: /smpguide
