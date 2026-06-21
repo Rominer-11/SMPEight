@@ -40,22 +40,22 @@ public class SpeedControl implements Listener
 
 		if (helmet != null && helmet.getType() != Material.LEATHER_HELMET && helmet.getType() != Material.CHAINMAIL_HELMET)
 		{
-			armordebuff += .15;
+			armordebuff += 0.1125;
 		}
 		// Exclude Elytra
 		if (chestplate != null && chestplate.getType() != Material.LEATHER_CHESTPLATE
 				&& chestplate.getType() != Material.CHAINMAIL_CHESTPLATE
 				&& chestplate.getType() != Material.ELYTRA)
 		{
-			armordebuff += .40;
+			armordebuff += 0.3;
 		}
 		if (leggings != null && leggings.getType() != Material.LEATHER_LEGGINGS && leggings.getType() != Material.CHAINMAIL_LEGGINGS)
 		{
-			armordebuff += .30;
+			armordebuff += 0.225;
 		}
 		if (boots != null && boots.getType() != Material.LEATHER_BOOTS && boots.getType() != Material.CHAINMAIL_BOOTS)
 		{
-			armordebuff += .15;
+			armordebuff += 0.1125;
 		}
 
 		newspeed = newspeed - ((armordebuff * (float) 0.1));

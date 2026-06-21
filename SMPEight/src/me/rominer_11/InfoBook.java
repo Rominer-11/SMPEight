@@ -21,59 +21,32 @@ public class InfoBook implements Listener
 		meta.setPages(
 			// Page 1: Welcome
 			"§l§nWelcome to SMPEight!§r\n\n" +
-			"This plugin changes vanilla Minecraft in many ways. " +
-			"This book explains the key features.\n\n" +
+			"This plugin makes vanilla Minecraft's progression longer and more challenging. " +
+			"This book explains the key features in broad terms.\n\n" +
 			"Use §l/smpguide§r to reopen this book at any time.",
 
-			// Page 2: Speed Control
-			"§l§nSpeed Control§r\n\n" +
-			"Your walk speed is based on your §lhealth§r and §lhunger§r. " +
-			"The fuller your bars, the faster you move.\n\n",
+			// Page 2: Weakness
+			"§l§nWeakness§r\n\n" +
+			"Depending on how §lhealthy§r you are, some of your in-game stats may drop.\n\n" +
+			"A good idea might be to avoid combat when you are in poor condition.\n\n",
 			
-			// Page 3: Speed control continued
-			"§lArmor§r slows you down! Heavy armor like diamond and netherite has the biggest debuff. " +
-			"§lLeather§r, §lchainmail§r, and §lelytra§r are lightweight and have no speed penalty.",
-
-			// Page 4: Damage Control
-			"§l§nDamage Control§r\n\n" +
-			"The damage you deal scales with your §lhealth§r and §lhunger§r. " +
-			"Full health and hunger means 100% damage.\n\n" +
-			"§lMonsters§r deal §l2.5x§r damage to you, so stay prepared!",
-
-			// Page 5: Climate Control
+			// Page 3: Climate
 			"§l§nClimate§r\n\n" +
-			"Biome §ltemperature§r and §lhumidity§r affect your comfort. " +
-			"§lLeather armor§r adds warmth. " +
-			"§lChainmail§r is climate-neutral.\n\n",
+			"Certain biomes may be significantly less hospitable than others.\n\n" +
+			"Use §lLeather armor§r to stay warm, and remember that §lChainmail§r is a breathable material.\n\n",
 
-			// Page 6: climate control continued
-			"The §lNether§r is extremely hot! Like, §lVERY§r hot!\n " +
-			"Hunger drains faster in uncomfortable conditions.",
+			// Page 4: The Nether
+			"§l§nThe Nether§r\n\n" +
+			"The §lNether§r is §lVERY§r hot!\n\n" +
+			"Navigating the Nether will be difficult. It is, however, entirely possible with a little bit of strategy. Don't give up!\n\n",
 
-			// Page 7: Mob Control
+			// Page 5: Mob Control
 			"§l§nMobs§r\n\n" +
-			"§lCreepers§r have smarter AI! " +
-			"§lShields§r reduce explosion damage but don't block it completely.\n\n" +
-			"Again, Monsters deal §l2.5x§r damage to you, so stay prepared!",
+			"Monsters will be very tough to deal with.\n\n" +
+			"Don't get discouraged!\n\n" +
+			"If you plan your base well, they won't be a regular issue.\n\n",
 
-			// Page 8: Enchanting & Anvils
-			"§l§nEnchanting & Anvils§r\n\n" +
-			"Enchanting table costs are §l1.5x§r more expensive.\n\n" +
-			"Anvils §lcannot§r combine two items if either has enchantments. " +
-			"You can still repair items by combining them.",
-
-			// Page 9: Mining & Beds
-			"§l§nMining & Beds§r\n\n" +
-			"Breaking blocks increases your §lhunger exhaustion§r.\n\n" +
-			"Whatever you do, §lPLEASE§r don't try bed-bombing in the Nether or End!",
-
-			// Page 10: Tips
-			"§l§nTips§r\n\n" +
-			"• Wear §lleather§r or §lchainmail§r to stay fast.\n\n" +
-			"• Match your armor to the §lclimate§r.\n\n" +
-			"• §l/smpguide§r to reopen this book",
-			
-			// Page 11: Credits
+			// Page 6: Credits
 			"§l§nCredits§r\n\n" +
 			"Lead Developer: \n August - rominer_11\n" +
 			"Developer: \n Sky - ghoststaryt"
@@ -93,6 +66,8 @@ public class InfoBook implements Listener
 				player.getServer().getPluginManager().getPlugin("SMPEight"),
 				() -> player.openBook(createBook())
 			);
+			ItemStack steak = new ItemStack(Material.COOKED_BEEF, 16);
+			player.getInventory().addItem(steak);
 		}
 	}
 }
